@@ -22,9 +22,11 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
+@ToString(exclude = "invoiceItems") // avoid infinite recursion
 public class Item {
 
     @Id
@@ -32,7 +34,7 @@ public class Item {
     private int id;
 
     @Column(length = 150, nullable = false)
-    private String item_name;
+    private String itemName;
 
     @Column(columnDefinition = "TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci")
     private String description;
@@ -59,6 +61,6 @@ public class Item {
     private Category category;
 
     // invoice_items relation
-    @OneToMany(mappedBy = "invoice_item" , cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "item" , cascade = CascadeType.ALL)
     private List<InvoiceItems> invoiceItems = new ArrayList<>();
 }

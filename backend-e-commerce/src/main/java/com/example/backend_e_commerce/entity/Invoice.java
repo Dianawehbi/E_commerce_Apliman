@@ -45,6 +45,6 @@ public class Invoice {
     private Instant invoice_date;
 
     // invoice_items relation
-    @OneToMany(mappedBy = "invoice_item", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL)
     private List<InvoiceItems> invoiceItems = new ArrayList<>();
 }
