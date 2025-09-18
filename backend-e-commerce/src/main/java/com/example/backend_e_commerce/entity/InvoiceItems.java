@@ -20,7 +20,7 @@ public class InvoiceItems {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     // invoice relation 
     @ManyToOne()
@@ -35,7 +35,7 @@ public class InvoiceItems {
     private Item item;
 
     @Column(columnDefinition = "Decimal(10,2)", nullable = false)
-    private double unit_price;
+    private double unitPrice;
 
     @Column(nullable = false)
     private int quantity;

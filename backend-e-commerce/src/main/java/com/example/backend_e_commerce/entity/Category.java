@@ -24,7 +24,7 @@ public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column(length = 100 , nullable = false)
     private String name;
@@ -33,7 +33,7 @@ public class Category {
     private String icon;
 
     @CreationTimestamp
-    private Instant created_at;
+    private Instant createdAt;
 
     // Item
     @OneToMany(mappedBy = "category" , cascade = CascadeType.ALL)

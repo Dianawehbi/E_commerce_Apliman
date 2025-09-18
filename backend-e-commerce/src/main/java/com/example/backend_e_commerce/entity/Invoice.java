@@ -27,7 +27,7 @@ import lombok.Setter;
 public class Invoice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     // Customer relation
     @ManyToOne()
@@ -36,15 +36,12 @@ public class Invoice {
     private Customer customer;
 
     @Column(columnDefinition = "Decimal(10,2) default 0.00")
-    private double total_amount;
-
-    @Column(columnDefinition = "integer default 0")
-    private int stock_quantity;
+    private double totalAmount;
 
     @CreationTimestamp
-    private Instant invoice_date;
+    private Instant invoiceDate;
 
-    // invoice_items relation
+    // invoice_items relationb 
     @OneToMany(mappedBy = "invoice", cascade = CascadeType.ALL)
     private List<InvoiceItems> invoiceItems = new ArrayList<>();
 }

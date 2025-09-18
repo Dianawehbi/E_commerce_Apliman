@@ -28,7 +28,7 @@ public class Customer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto inc
-    private int id;
+    private Integer id;
 
     @Column(nullable = false, length = 150)
     private String username;
@@ -43,10 +43,10 @@ public class Customer {
     private String address;
 
     @UpdateTimestamp
-    private Instant updated_at;
+    private Instant updatedAt;
 
     @CreationTimestamp
-    private Instant created_at;
+    private Instant createdInstant;
 
     // invoice relation 
     @OneToMany(mappedBy = "customer" , cascade = CascadeType.ALL)

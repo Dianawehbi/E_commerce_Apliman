@@ -1,15 +1,12 @@
 package com.example.backend_e_commerce.entity;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,21 +14,18 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Entity
 @Getter @Setter @NoArgsConstructor @AllArgsConstructor
-@ToString(exclude = "invoiceItems") // avoid infinite recursion
 public class Item {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Integer id;
 
     @Column(length = 150, nullable = false)
     private String itemName;
@@ -46,13 +40,13 @@ public class Item {
     private double price;
 
     @Column(columnDefinition = "integer default 0")
-    private int stock_quantity;
+    private int stockQuantity;
 
     @UpdateTimestamp
-    private Instant updated_at;
+    private Instant updatedAt;
 
     @CreationTimestamp
-    private Instant created_at;
+    private Instant createdAt;
 
     // category relationship
     @ManyToOne
@@ -60,7 +54,7 @@ public class Item {
     @JsonIgnore // to stop infinite recursion
     private Category category;
 
-    // invoice_items relation
-    @OneToMany(mappedBy = "item" , cascade = CascadeType.ALL)
-    private List<InvoiceItems> invoiceItems = new ArrayList<>();
+    // @OneToMany(mappedBy = "item" , cascade =  CascadeType.ALL)
+    // private InvoiceItems invoiceItem;
+
 }
