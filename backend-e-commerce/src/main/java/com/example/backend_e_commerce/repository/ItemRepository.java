@@ -1,6 +1,7 @@
 package com.example.backend_e_commerce.repository;
 
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -8,5 +9,7 @@ import com.example.backend_e_commerce.entity.Item;
 
 @Repository
 public interface ItemRepository extends JpaRepository<Item, Integer> {
+
+    Page<Item> findByItemNameContainingIgnoreCase(String itemName, Pageable pageable);
 
 }
