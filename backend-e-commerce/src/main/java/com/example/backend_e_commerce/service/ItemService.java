@@ -5,9 +5,13 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.example.backend_e_commerce.dto.ItemRequestDTO;
+import com.example.backend_e_commerce.dto.ItemResponseDTO;
 import com.example.backend_e_commerce.entity.Item;
 import com.example.backend_e_commerce.exceptions.BusinessRuleException;
 import com.example.backend_e_commerce.exceptions.ResourceNotFoundException;
+import com.example.backend_e_commerce.mapper.ItemMapper;
+import com.example.backend_e_commerce.repository.CategoryRepository;
 import com.example.backend_e_commerce.repository.ItemRepository;
 
 import jakarta.transaction.Transactional;
@@ -17,43 +21,58 @@ public class ItemService {
     @Autowired
     private ItemRepository repo;
 
+    @Autowired
+    private ItemMapper mapper;
+
+    @Autowired
+    private CategoryRepository categoryRepository;
+
     // create item
-    public Item creaItem(Item item) {
-        if (item.getItemName() == null || item.getItemName().isBlank()) {
-            throw new BusinessRuleException("Item name is required");
+    public ItemResponseDTO creaItem(ItemRequestDTO itemDTO) {
+        if (itemDTO.getItemName() == null || itemDTO.getItemName().isBlank()) {
+            throw new BusinessRuleException("Item's name is required");
         }
 
-        if (item.getPrice() == 0) {
-            throw new BusinessRuleException("Item price is required");
+        if (itemDTO.getPrice() == 0) {
+            throw new BusinessRuleException("Item's price is required");
         }
-        // System.out.println(item.getCategory().getName());
-
-        return repo.save(item);
+        Item item = mapper.toEntity(itemDTO, categoryRepository);
+        return mapper.toDto(repo.save(item));
     }
 
     // get all items
-    public Page<Item> getAllItems(Pageable pageable) {
-        return repo.findAll(pageable);
+    public Page<ItemResponseDTO> getAllItems(Pageable pageable) {
+        Page<Item> items = repo.findAll(pageable);
+        return items.map(mapper::toDto);
+    }
+
+    // get item by id
+    public ItemResponseDTO getItemById(int id) {
+        Item item = repo.findById(id).orElseThrow(() -> new ResourceNotFoundException("No Item with id " + id));
+        return mapper.toDto(item);
     }
 
     // search item by item_name
-    public Page<Item> searchItems(String item_name, Pageable pageable) {
-        return repo.findByItemNameContainingIgnoreCase(item_name , pageable);
+    public Page<ItemResponseDTO> searchItems(String item_name, Pageable pageable) {
+        Page<Item> items = repo.findByItemNameContainingIgnoreCase(item_name, pageable);
+        return items.map(mapper::toDto);
     }
 
     // update item
     @Transactional
-    public Item updateItem(int id, Item item) {
+    public ItemResponseDTO updateItem(int id, ItemRequestDTO itemDTO) {
+        Item item = mapper.toEntity(itemDTO, categoryRepository);
+
         // verify that a item with the given ID exists
         Item existingItem = repo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Item with id " + id + " was not found"));
 
-        // validate username and email
-        if (item.getItemName() == null || item.getItemName().isBlank()) {
+        // validate name and price
+        if (itemDTO.getItemName() == null || itemDTO.getItemName().isBlank()) {
             throw new BusinessRuleException("Item name is required");
         }
 
-        if (item.getPrice() == 0) {
+        if (itemDTO.getPrice() == 0) {
             throw new BusinessRuleException("Item price is required");
         }
 
@@ -62,11 +81,10 @@ public class ItemService {
         existingItem.setDescription(item.getDescription());
         existingItem.setImage_path(item.getImage_path());
         existingItem.setPrice(item.getPrice());
-        existingItem.setStock_quantity(item.getStock_quantity());
+        existingItem.setStockQuantity(item.getStockQuantity());
         existingItem.setCategory(item.getCategory());
 
-        // then save
-        return repo.save(existingItem);
+        return mapper.toDto(repo.save(existingItem));
     }
 
     // delete item

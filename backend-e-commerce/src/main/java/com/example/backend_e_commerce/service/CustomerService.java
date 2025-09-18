@@ -5,14 +5,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.example.backend_e_commerce.dto.CustomerRequestDTO;
+import com.example.backend_e_commerce.dto.CustomerResponseDTO;
 import com.example.backend_e_commerce.entity.Customer;
 import com.example.backend_e_commerce.exceptions.BusinessRuleException;
 import com.example.backend_e_commerce.exceptions.ResourceNotFoundException;
+import com.example.backend_e_commerce.mapper.CustomerMapper;
 import com.example.backend_e_commerce.repository.CustomerRepository;
 
 import jakarta.transaction.Transactional;
-
-import java.util.List;
 
 @Service
 public class CustomerService {
@@ -20,21 +21,34 @@ public class CustomerService {
     @Autowired
     private CustomerRepository repo;
 
+    @Autowired
+    private CustomerMapper mapper;
+
     // Get all customers
-    public Page<Customer> getAllCustomers(Pageable pageable) {
+    public Page<CustomerResponseDTO> getAllCustomers(Pageable pageable) {
         // add sorting +paging
-        return repo.findAll(pageable);
+        Page<Customer> customers = repo.findAll(pageable);
+        return customers.map(mapper::toDto);
+    }
+
+    // get customer by id
+    public CustomerResponseDTO getCustomerById(int id) {
+        Customer customer = repo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Cannot Find Customer With Id: " + id));
+        return mapper.toDto(customer);
     }
 
     // search for customer by username
-    public List<Customer> searchCustomer(String username , Pageable pageable) {
+    public Page<CustomerResponseDTO> searchCustomer(String username, Pageable pageable) {
         // add paging and sorting
-        return repo.findByUsernameContainingIgnoreCase(username , pageable);
+        Page<Customer> customers = repo.findByUsernameContainingIgnoreCase(username, pageable);
+        return customers.map(mapper::toDto);
     }
 
     // Create customer
     @Transactional
-    public Customer addCustomer(Customer customer) {
+    public CustomerResponseDTO addCustomer(CustomerRequestDTO customerDTO) {
+        Customer customer = mapper.toEntity(customerDTO);
         if (customer.getUsername() == null || customer.getUsername().isBlank()) {
             throw new BusinessRuleException("Customer username is required");
         }
@@ -47,7 +61,7 @@ public class CustomerService {
             throw new BusinessRuleException("Email already exists: " + customer.getEmail());
         }
 
-        return repo.save(customer);
+        return mapper.toDto(repo.save(customer));
     }
 
     // delete customer by id
@@ -60,7 +74,8 @@ public class CustomerService {
     }
 
     @Transactional
-    public Customer updateCustomer(int id, Customer customer) {
+    public CustomerResponseDTO updateCustomer(int id, CustomerRequestDTO customerDTO) {
+        Customer customer = mapper.toEntity(customerDTO);
         // verify that a customer with the given ID exists
         Customer existingCustomer = repo.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer with id " + id + " was not found"));
@@ -88,7 +103,7 @@ public class CustomerService {
         existingCustomer.setUsername(customer.getUsername());
 
         // then save
-        return repo.save(existingCustomer);
+        return mapper.toDto(repo.save(existingCustomer));
     }
 
 }
