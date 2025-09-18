@@ -2,10 +2,9 @@ package com.example.backend_e_commerce.controller;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.backend_e_commerce.entity.Customer;
+import com.example.backend_e_commerce.dto.CustomerRequestDTO;
+import com.example.backend_e_commerce.dto.CustomerResponseDTO;
 import com.example.backend_e_commerce.service.CustomerService;
-
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -28,26 +27,31 @@ public class CustomerController {
 
     // create customer
     @PostMapping
-    public Customer createCustomer(@RequestBody Customer customer) {
-        return customerService.addCustomer(customer);
+    public CustomerResponseDTO createCustomer(@RequestBody CustomerRequestDTO customerRequestDTO) {
+        return customerService.addCustomer(customerRequestDTO);
     }
 
     // fetch all customers
     @GetMapping
-    public Page<Customer> getAllCustomers(Pageable pageable) {
+    public Page<CustomerResponseDTO> getAllCustomers(Pageable pageable) {
         return customerService.getAllCustomers(pageable);
+    }
+
+    @GetMapping("/{id}")
+    public CustomerResponseDTO getCustomerById(@PathVariable int id) {
+        return customerService.getCustomerById(id);
     }
 
     // fetch customers with similar name, search?name=name
     @GetMapping("/search")
-    public List<Customer> findCustomersByName(@RequestParam String name , Pageable pageable) {
-        return customerService.searchCustomer(name , pageable);
+    public Page<CustomerResponseDTO> findCustomersByName(@RequestParam String name, Pageable pageable) {
+        return customerService.searchCustomer(name, pageable);
     }
 
     // update customer
     @PutMapping("/{id}")
-    public Customer updateCustomer(@PathVariable int id, @RequestBody Customer customer) {
-        return customerService.updateCustomer(id, customer);
+    public CustomerResponseDTO updateCustomer(@PathVariable int id, @RequestBody CustomerRequestDTO customerRequestDTO) {
+        return customerService.updateCustomer(id, customerRequestDTO);
     }
 
     // delete customer

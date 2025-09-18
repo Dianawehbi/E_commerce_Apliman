@@ -1,25 +1,22 @@
 package com.example.backend_e_commerce.controller;
 
-import java.util.List;
-
-// import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.backend_e_commerce.entity.Invoice;
-// import com.example.backend_e_commerce.service.InvoiceService;
+import com.example.backend_e_commerce.dto.InvoiceRequestDTO;
+import com.example.backend_e_commerce.dto.InvoiceResponseDTO;
 import com.example.backend_e_commerce.service.InvoiceService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 @RequestMapping("/invoices")
@@ -29,39 +26,45 @@ public class InvoiceController {
 
     // create invoice
     @PostMapping
-    public Invoice createInvoice(@RequestBody Invoice invoice) {
-        return invoiceService.createInvoice(invoice);
+    public InvoiceResponseDTO createInvoice(@RequestBody InvoiceRequestDTO invoiceRequestDTO) {
+        return invoiceService.createInvoice(invoiceRequestDTO);
     }
 
     // get all invoices
     @GetMapping
-    public Page<Invoice> getAllInvoices(Pageable pageable) {
+    public Page<InvoiceResponseDTO> getAllInvoices(Pageable pageable) {
         return invoiceService.getAllInvoices(pageable);
     }
 
     // get all by customer id
-    @GetMapping("/customer_id")
-    public List<Invoice> getInvoiceByCustomerId(@RequestParam int customer_id) {
-        return null;
+    @GetMapping("/customer_id/{id}")
+    public Page<InvoiceResponseDTO> getInvoiceByCustomerId(@PathVariable int id) {
+        return invoiceService.getInvoiceByCustomerId(id, null);
     }
 
     // get all invoices by customer name
-    @GetMapping("/customer_name")
-    public List<Invoice> getInvoiceByCustomerName(@RequestParam String customer_name) {
-        return null;
+    @GetMapping("/customer_name/{customer_name}")
+    public Page<InvoiceResponseDTO> getInvoiceByCustomerName(@PathVariable String customer_name) {
+        return invoiceService.getInvoiceByCustomerName(customer_name, null);
+    }
+
+    // get invoice by id
+    @GetMapping("/{id}")
+    public InvoiceResponseDTO getInvoiceById(@PathVariable int id) {
+        return invoiceService.getInvoiceById(id);
     }
 
     // update invoice
     @PutMapping("/{id}")
-    public Invoice updateInvoice(@PathVariable int id, @RequestBody Invoice invoice) {
-        return invoiceService.updateInvoice(id, invoice);
+    public InvoiceResponseDTO updateInvoice(@PathVariable int id, @RequestBody InvoiceRequestDTO invoiceRequestDTO) {
+        return invoiceService.updateInvoice(id, invoiceRequestDTO);
     }
 
     // delete invoice
     @DeleteMapping("/{id}")
-    public void deleteInvoice(@PathVariable int id) {
+    public ResponseEntity<Void> deleteInvoice(@PathVariable int id) {
         invoiceService.deleteInvoice(id);
-        ;
+        return ResponseEntity.noContent().build();
     }
 
 }

@@ -1,17 +1,16 @@
 package com.example.backend_e_commerce.controller;
 
 import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.backend_e_commerce.entity.Category;
-import com.example.backend_e_commerce.entity.Invoice;
+import com.example.backend_e_commerce.dto.CategoryRequestDTO;
+import com.example.backend_e_commerce.dto.CategoryResponseDTO;
 import com.example.backend_e_commerce.service.CategoryService;
 
 @RestController
@@ -23,19 +22,19 @@ public class CategoryController {
 
     // add new category
     @PostMapping
-    public Category createCategory(@RequestBody Category category) {
-        return categoryService.createCategory(category);
+    public CategoryResponseDTO createCategory(@RequestBody CategoryRequestDTO categoryDTO) {
+        return categoryService.createCategory(categoryDTO);
     }
 
     // get all categories
     @GetMapping
-    public List<Category> getAllCategories() {
+    public List<CategoryResponseDTO> getAllCategories() {
         return categoryService.getAllCategories();
     }
 
     // get category by id
     @GetMapping("/{id}")
-    public List<Invoice> getCategoryById(@RequestParam int id) {
-        return null;
+    public CategoryResponseDTO getCategoryById(@PathVariable int id) {
+        return categoryService.getCategoryById(id);
     }
 }
