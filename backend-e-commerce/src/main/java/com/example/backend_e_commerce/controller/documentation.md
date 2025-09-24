@@ -115,13 +115,21 @@
             "invoiceitems": [
                 {
                     "id": 8,
-                    "itemId": 5,
                     "invoiceId": 10,
                     "unitPrice": 4.0,
-                    "quantity": 0
+                    "quantity": 0,
+                    "item": {
+                        "id": 5,
+                        "itemName": "hair perfume",
+                        "description": "Alvin dor serum ",
+                        "image_path": null,
+                        "price": 4.0,
+                        "stockQuantity": 6,
+                        "categoryId": null
+                    }
                 },
                 {
-                    "id": 9, ..........
+                    "id": 9,..........
                 }
             ]
         },....
