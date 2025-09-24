@@ -80,8 +80,9 @@ class InvoiceService {
   }) async {
     final params = {'page': '$page', 'size': '$size'};
     final response = await http.get(
-      Uri.parse('$baseUrl$endpoint/customer_id/$customerId')
-          .replace(queryParameters: params),
+      Uri.parse(
+        '$baseUrl$endpoint/customer_id/$customerId',
+      ).replace(queryParameters: params),
       headers: headers,
     );
 
@@ -90,11 +91,10 @@ class InvoiceService {
       final invoices = (data['content'] as List)
           .map((json) => Invoice.fromJson(json))
           .toList();
-
       return PagedResponse<Invoice>(
         objects: invoices,
         totalPages: data['totalPages'] ?? 1,
-        currentPage: data['pageable']['pageNumber'] ?? page,
+        currentPage:  page,
       );
     } else {
       throw ApiException(response.statusCode, response.body);
@@ -109,8 +109,9 @@ class InvoiceService {
   }) async {
     final params = {'page': '$page', 'size': '$size'};
     final response = await http.get(
-      Uri.parse('$baseUrl$endpoint/customer_name/$customerName')
-          .replace(queryParameters: params),
+      Uri.parse(
+        '$baseUrl$endpoint/customer_name/$customerName',
+      ).replace(queryParameters: params),
       headers: headers,
     );
 
