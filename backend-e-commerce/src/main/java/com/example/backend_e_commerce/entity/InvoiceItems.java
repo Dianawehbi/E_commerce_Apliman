@@ -30,8 +30,7 @@ public class InvoiceItems {
 
     // item relation
     @ManyToOne()
-    @JsonIgnore
-    @JoinColumn(name = "item_id", nullable = false)
+    @JoinColumn(name = "item_id")
     private Item item;
 
     @Column(columnDefinition = "Decimal(10,2)", nullable = false)

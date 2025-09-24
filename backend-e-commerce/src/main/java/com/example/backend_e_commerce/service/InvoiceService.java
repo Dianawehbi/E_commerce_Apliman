@@ -187,7 +187,7 @@ public class InvoiceService {
     }
 
     private InvoiceItems mapInvoiceItem(InvoiceItemsRequestDTO itemDTO, Item item, Invoice invoice) {
-        InvoiceItems invoiceItem = invoiceItemMapper.toEntity(itemDTO);
+        InvoiceItems invoiceItem = invoiceItemMapper.toEntity(itemDTO , itemRepository);
         invoiceItem.setItem(item);
         invoiceItem.setInvoice(invoice);
         invoiceItem.setUnitPrice(item.getPrice());
