@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_e_commerce/controllers/cart_controller.dart';
+import 'package:frontend_e_commerce/controllers/item_controller.dart';
 import 'package:frontend_e_commerce/models/invoice_items.dart';
 import 'package:frontend_e_commerce/models/item.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hive/hive.dart';
 
 class ItemCardWidget extends StatefulWidget {
@@ -16,11 +18,13 @@ class ItemCardWidget extends StatefulWidget {
 class _ItemCardWidgetState extends State<ItemCardWidget> {
   int quantity = 1;
   late CartController cartController;
+  late ItemController itemController;
 
   @override
   void initState() {
     super.initState();
     cartController = CartController(cartBox: Hive.box<InvoiceItems>('cartBox'));
+    itemController = ItemController();
     quantity = 1;
   }
 
@@ -43,16 +47,16 @@ class _ItemCardWidgetState extends State<ItemCardWidget> {
     );
   }
 
+  void _deleteItem() {
+    setState(() {
+      itemController.deleteItem(widget.item.id!);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: ConstrainedBox(
-        constraints: const BoxConstraints(
-          // minWidth: 200, // minimum width
-          // maxWidth: 300, // maximum width
-          // minHeight: 360, // minimum height
-          // maxHeight: 400, // maximum height
-        ),
+      child: SingleChildScrollView(
         child: Card(
           elevation: 5,
           shape: RoundedRectangleBorder(
@@ -125,6 +129,41 @@ class _ItemCardWidgetState extends State<ItemCardWidget> {
                         IconButton(
                           icon: const Icon(Icons.add_shopping_cart),
                           onPressed: _addToCart,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    // Update & Delete buttons
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            onPressed: () =>
+                                context.go('/items/update/${widget.item.id}'),
+                            icon: const Icon(Icons.edit, size: 18),
+                            label: const Text("Update"),
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: ElevatedButton.icon(
+                            onPressed: _deleteItem,
+                            icon: const Icon(Icons.delete, size: 18),
+                            label: const Text("Delete"),
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                          ),
                         ),
                       ],
                     ),
