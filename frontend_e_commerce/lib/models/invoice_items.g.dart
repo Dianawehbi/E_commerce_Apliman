@@ -65,11 +65,14 @@ InvoiceItems _$InvoiceItemsFromJson(Map<String, dynamic> json) => InvoiceItems(
       itemId: (json['itemId'] as num).toInt(),
       quantity: (json['quantity'] as num).toInt(),
       unitPrice: (json['unitPrice'] as num).toDouble(),
+      item: json['item'] == null
+          ? null
+          : Item.fromJson(json['item'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$InvoiceItemsToJson(InvoiceItems instance) =>
     <String, dynamic>{
       'itemId': instance.itemId,
       'quantity': instance.quantity,
-      'unitPrice': instance.unitPrice,
+      'unitPric': instance.unitPrice,
     };

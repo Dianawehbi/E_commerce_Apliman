@@ -12,6 +12,8 @@ class Invoice {
   final double? totalAmount;
   @JsonKey(includeToJson: false)
   final DateTime? invoiceDate;
+
+  @JsonKey(name: "invoiceitems")
   final List<InvoiceItems> invoiceItems;
 
   Invoice({

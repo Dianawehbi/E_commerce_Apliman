@@ -25,7 +25,7 @@ class InvoiceItems extends HiveObject {
   final double unitPrice;
 
   @HiveField(5)
-  @JsonKey(includeToJson: false, includeFromJson: false) 
+  @JsonKey(includeToJson: false) 
   final Item? item; // full product for UI only
 
   InvoiceItems({
