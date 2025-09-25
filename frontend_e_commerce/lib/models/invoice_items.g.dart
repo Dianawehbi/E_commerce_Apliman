@@ -19,7 +19,7 @@ class InvoiceItemsAdapter extends TypeAdapter<InvoiceItems> {
     return InvoiceItems(
       id: fields[0] as int?,
       invoiceId: fields[1] as int?,
-      itemId: fields[2] as int,
+      itemId: fields[2] as int?,
       quantity: fields[3] as int,
       unitPrice: fields[4] as double,
       item: fields[5] as Item?,
@@ -62,7 +62,7 @@ class InvoiceItemsAdapter extends TypeAdapter<InvoiceItems> {
 InvoiceItems _$InvoiceItemsFromJson(Map<String, dynamic> json) => InvoiceItems(
       id: (json['id'] as num?)?.toInt(),
       invoiceId: (json['invoiceId'] as num?)?.toInt(),
-      itemId: (json['itemId'] as num).toInt(),
+      itemId: (json['itemId'] as num?)?.toInt(),
       quantity: (json['quantity'] as num).toInt(),
       unitPrice: (json['unitPrice'] as num).toDouble(),
       item: json['item'] == null
@@ -74,5 +74,5 @@ Map<String, dynamic> _$InvoiceItemsToJson(InvoiceItems instance) =>
     <String, dynamic>{
       'itemId': instance.itemId,
       'quantity': instance.quantity,
-      'unitPric': instance.unitPrice,
+      'unitPrice': instance.unitPrice,
     };

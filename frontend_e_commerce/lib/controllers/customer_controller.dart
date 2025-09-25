@@ -41,7 +41,6 @@ class CustomerController extends ChangeNotifier {
     } catch (e) {
       customers = [];
       errorMessage = e.toString();
-      print(e);
     } finally {
       isLoading = false;
       notifyListeners();
@@ -89,7 +88,6 @@ class CustomerController extends ChangeNotifier {
       return true;
     } catch (e) {
       errorMessage = e.toString();
-      print(e);
       return false;
     } finally {
       notifyListeners();

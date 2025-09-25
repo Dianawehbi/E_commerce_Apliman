@@ -21,7 +21,7 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ItemController()),
-        ChangeNotifierProvider(create: (_) => CustomerController()..loadCustomers()),
+        ChangeNotifierProvider(create: (_) => CustomerController()),
         ChangeNotifierProvider(create: (_) => InvoiceController()),
         ChangeNotifierProvider(
           create: (_) =>

@@ -6,8 +6,8 @@ part 'invoice.g.dart';
 @JsonSerializable()
 class Invoice {
   @JsonKey(includeToJson: false)
-  final int id;
-  final int customerId; // only Id
+  final int? id;
+  final int? customerId; // only Id
   @JsonKey(includeToJson: false)
   final double? totalAmount;
   @JsonKey(includeToJson: false)

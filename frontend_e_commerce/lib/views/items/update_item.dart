@@ -35,7 +35,7 @@ class _UpdateItemPageState extends State<UpdateItemPage> {
   }
 
   Future<void> _loadItem() async {
-    final itemProvider = context.watch<ItemController>();
+    final itemProvider = context.read<ItemController>();
     try {
       final fetchedItem = await itemProvider.getItemById(widget.itemId);
       if (fetchedItem == null) {
@@ -63,7 +63,7 @@ class _UpdateItemPageState extends State<UpdateItemPage> {
   Future<void> _updateItem() async {
     if (!_formKey.currentState!.validate()) return;
 
-    final itemProvider = context.watch<ItemController>();
+    final itemProvider = context.read<ItemController>();
     final updatedItem = Item(
       id: widget.itemId,
       itemName: _nameController.text,
@@ -220,7 +220,8 @@ class _UpdateItemPageState extends State<UpdateItemPage> {
                             },
                           ),
                           const SizedBox(height: 16),
-                          FormTextFieldWidget(
+                        
+                                  FormTextFieldWidget(
                             textController: _stockController,
                             label: "Stock Quantity",
                             icon: Icons.inventory_2_outlined,

@@ -120,7 +120,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                                         -1,
                                       ),
                                       onDelete: () => controller.deleteItem(
-                                        invoiceItem.itemId,
+                                        invoiceItem.itemId!,
                                       ),
                                       invoiceItems: invoiceItem,
                                     );

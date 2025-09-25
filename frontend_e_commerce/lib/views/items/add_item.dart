@@ -30,7 +30,7 @@ class _AddItemPageState extends State<AddItemPage> {
 
   Future<void> _addItem() async {
     if (_formKey.currentState!.validate()) {
-      final itemProvider = context.watch<ItemController>();
+      final itemProvider = context.read<ItemController>();
 
       Item new_item = Item(
         itemName: _nameController.text,

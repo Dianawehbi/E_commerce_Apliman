@@ -21,6 +21,14 @@ class _CheckoutPageState extends State<CheckoutPage> {
   Customer? selectedCustomer;
   String errorMessage = '';
   final ScrollController _scrollController = ScrollController();
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final customerController = context.read<CustomerController>();
+      customerController.loadCustomers(page: 1, size: 10);
+    });
+  }
 
   void _saveInvoice(
     InvoiceController invoiceController,
@@ -39,7 +47,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
           (item) => InvoiceItems(
             quantity: item.quantity,
             unitPrice: item.unitPrice,
-            itemId: item.itemId ,
+            itemId: item.itemId,
           ),
         )
         .toList();
@@ -50,7 +58,6 @@ class _CheckoutPageState extends State<CheckoutPage> {
       customerId: selectedCustomer!.id,
       invoiceItems: invoiceItems,
     );
-
 
     await invoiceController.addInvoice(new_invoice);
 
@@ -64,6 +71,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
         ),
       );
     } else {
+      cartController.clearCart();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text("Invoice added successfully"),
