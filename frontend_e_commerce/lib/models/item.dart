@@ -6,6 +6,7 @@ part 'item.g.dart';
 @JsonSerializable()
 @HiveType(typeId: 1)
 class Item {
+  @HiveField(5)
   @JsonKey(includeToJson: false)
   final int? id;
 

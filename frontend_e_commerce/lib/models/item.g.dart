@@ -17,6 +17,7 @@ class ItemAdapter extends TypeAdapter<Item> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Item(
+      id: fields[5] as int?,
       itemName: fields[0] as String,
       description: fields[1] as String,
       imagePath: fields[2] as String?,
@@ -28,7 +29,9 @@ class ItemAdapter extends TypeAdapter<Item> {
   @override
   void write(BinaryWriter writer, Item obj) {
     writer
+      ..writeByte(6)
       ..writeByte(5)
+      ..write(obj.id)
       ..writeByte(0)
       ..write(obj.itemName)
       ..writeByte(1)

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:frontend_e_commerce/controllers/cart_controller.dart';
-import 'package:frontend_e_commerce/controllers/item_controller.dart';
 import 'package:frontend_e_commerce/models/invoice_items.dart';
 import 'package:frontend_e_commerce/models/item.dart';
 import 'package:go_router/go_router.dart';
@@ -8,8 +7,9 @@ import 'package:hive/hive.dart';
 
 class ItemCardWidget extends StatefulWidget {
   final Item item;
+  final VoidCallback onDelete;
 
-  const ItemCardWidget({super.key, required this.item});
+  const ItemCardWidget({super.key, required this.item, required this.onDelete});
 
   @override
   State<ItemCardWidget> createState() => _ItemCardWidgetState();
@@ -18,13 +18,11 @@ class ItemCardWidget extends StatefulWidget {
 class _ItemCardWidgetState extends State<ItemCardWidget> {
   int quantity = 1;
   late CartController cartController;
-  late ItemController itemController;
 
   @override
   void initState() {
     super.initState();
     cartController = CartController(cartBox: Hive.box<InvoiceItems>('cartBox'));
-    itemController = ItemController();
     quantity = 1;
   }
 
@@ -45,12 +43,6 @@ class _ItemCardWidgetState extends State<ItemCardWidget> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text("${widget.item.itemName} added to cart!")),
     );
-  }
-
-  void _deleteItem() {
-    setState(() {
-      itemController.deleteItem(widget.item.id!);
-    });
   }
 
   @override
@@ -154,7 +146,7 @@ class _ItemCardWidgetState extends State<ItemCardWidget> {
                         const SizedBox(width: 12),
                         Expanded(
                           child: ElevatedButton.icon(
-                            onPressed: _deleteItem,
+                            onPressed: widget.onDelete,
                             icon: const Icon(Icons.delete, size: 18),
                             label: const Text("Delete"),
                             style: ElevatedButton.styleFrom(
