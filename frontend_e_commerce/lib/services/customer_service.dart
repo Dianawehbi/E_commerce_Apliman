@@ -117,7 +117,8 @@ class CustomerService {
     if (response.statusCode == 200 || response.statusCode == 201) {
       return Customer.fromJson(jsonDecode(response.body));
     } else {
-      throw ApiException(response.statusCode, response.body);
+      print(jsonDecode(response.body));
+      throw ApiException(response.statusCode, jsonDecode(response.body)['message']);
     }
   }
 
