@@ -35,7 +35,7 @@ class _UpdateItemPageState extends State<UpdateItemPage> {
   }
 
   Future<void> _loadItem() async {
-    final itemProvider = context.read<ItemController>();
+    final itemProvider = context.watch<ItemController>();
     try {
       final fetchedItem = await itemProvider.getItemById(widget.itemId);
       if (fetchedItem == null) {
@@ -63,7 +63,7 @@ class _UpdateItemPageState extends State<UpdateItemPage> {
   Future<void> _updateItem() async {
     if (!_formKey.currentState!.validate()) return;
 
-    final itemProvider = context.read<ItemController>();
+    final itemProvider = context.watch<ItemController>();
     final updatedItem = Item(
       id: widget.itemId,
       itemName: _nameController.text,

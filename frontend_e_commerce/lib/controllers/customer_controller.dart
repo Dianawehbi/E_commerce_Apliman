@@ -8,14 +8,13 @@ class CustomerController extends ChangeNotifier {
   bool isLoading = false;
   int currentPage = 1;
   int totalPages = 1;
-  final int pageSize = 10;
   String searchQuery = '';
   String errorMessage = '';
 
   CustomerController();
 
   // Load all customers (with pagination & optional search)
-  Future<void> loadCustomers({int page = 1}) async {
+  Future<void> loadCustomers({int page = 1 , int size = 10}) async {
     isLoading = true;
     errorMessage = '';
     notifyListeners();
@@ -27,12 +26,12 @@ class CustomerController extends ChangeNotifier {
         result = await CustomerService.searchCustomers(
           searchQuery,
           page: page - 1,
-          size: pageSize,
+          size: size,
         );
       } else {
         result = await CustomerService.fetchCustomers(
           page: page - 1,
-          size: pageSize,
+          size: size,
         );
       }
 

@@ -39,10 +39,16 @@ class _ItemCardWidgetState extends State<ItemCardWidget> {
   }
 
   void _addToCart() {
-    cartController.addItem(widget.item, quantity);
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("${widget.item.itemName} added to cart!")),
-    );
+    if (widget.item.stockQuantity < 1) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("${widget.item.itemName} Out of stock!")),
+      );
+    } else {
+      cartController.addItem(widget.item, quantity);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("${widget.item.itemName} added to cart!")),
+      );
+    }
   }
 
   @override
@@ -58,11 +64,10 @@ class _ItemCardWidgetState extends State<ItemCardWidget> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Image with max height
               SizedBox(
                 height: 150, // max image height
                 width: double.infinity,
-                child: Image.asset("images/shoes.png", fit: BoxFit.cover),
+                child: Image.asset("images/shoes.jpg", fit: BoxFit.cover),
               ),
               Padding(
                 padding: const EdgeInsets.all(12),

@@ -29,7 +29,7 @@ class ShoppingItemCardWidget extends StatelessWidget {
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: Image.asset(
-                "images/shoes.png",
+                "images/shoes.jpg",
                 width: 60,
                 height: 60,
                 fit: BoxFit.cover,

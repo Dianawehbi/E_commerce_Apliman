@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend_e_commerce/controllers/cart_controller.dart';
 import 'package:frontend_e_commerce/controllers/customer_controller.dart';
 import 'package:frontend_e_commerce/controllers/invoice_controller.dart';
 import 'package:frontend_e_commerce/controllers/item_controller.dart';
@@ -20,8 +21,13 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ItemController()),
-        ChangeNotifierProvider(create: (_) => CustomerController()),
+        ChangeNotifierProvider(create: (_) => CustomerController()..loadCustomers()),
         ChangeNotifierProvider(create: (_) => InvoiceController()),
+        ChangeNotifierProvider(
+          create: (_) =>
+              CartController(cartBox: Hive.box<InvoiceItems>('cartBox'))
+                ..loadCart(),
+        ),
       ],
       child: const MyApp(),
     ),
