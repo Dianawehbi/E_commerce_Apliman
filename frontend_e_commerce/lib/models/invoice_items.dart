@@ -19,7 +19,7 @@ class InvoiceItems extends HiveObject {
   final int? itemId; // only id
 
   @HiveField(3)
-  final int quantity;
+  int quantity;
 
   @HiveField(4)
   final double unitPrice;

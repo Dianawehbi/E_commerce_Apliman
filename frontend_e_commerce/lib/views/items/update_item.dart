@@ -220,8 +220,8 @@ class _UpdateItemPageState extends State<UpdateItemPage> {
                             },
                           ),
                           const SizedBox(height: 16),
-                        
-                                  FormTextFieldWidget(
+
+                          FormTextFieldWidget(
                             textController: _stockController,
                             label: "Stock Quantity",
                             icon: Icons.inventory_2_outlined,

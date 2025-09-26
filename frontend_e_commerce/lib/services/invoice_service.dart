@@ -24,7 +24,10 @@ class InvoiceService {
     if (response.statusCode == 200 || response.statusCode == 201) {
       return Invoice.fromJson(jsonDecode(response.body));
     } else {
-      throw ApiException(response.statusCode, response.body);
+      throw ApiException(
+        response.statusCode,
+        jsonDecode(response.body)['message'],
+      );
     }
   }
 
@@ -34,14 +37,12 @@ class InvoiceService {
     int size = 10,
   }) async {
     final params = {'page': '$page', 'size': '$size'};
-
     final response = await http
         .get(
           Uri.parse('$baseUrl$endpoint').replace(queryParameters: params),
           headers: headers,
         )
         .timeout(const Duration(seconds: 10));
-
     if (response.statusCode == 200) {
       final data = jsonDecode(response.body);
       final invoices = (data['content'] as List)
@@ -64,6 +65,7 @@ class InvoiceService {
       Uri.parse('$baseUrl$endpoint/$id'),
       headers: headers,
     );
+    print(jsonDecode(response.body));
 
     if (response.statusCode == 200) {
       return Invoice.fromJson(jsonDecode(response.body));
@@ -94,7 +96,7 @@ class InvoiceService {
       return PagedResponse<Invoice>(
         objects: invoices,
         totalPages: data['totalPages'] ?? 1,
-        currentPage:  page,
+        currentPage: page,
       );
     } else {
       throw ApiException(response.statusCode, response.body);
@@ -133,11 +135,14 @@ class InvoiceService {
 
   // Update invoice (must include all invoiceitems)
   static Future<Invoice> updateInvoice(int id, Invoice invoice) async {
+    print(jsonEncode(invoice.toJson()));
     final response = await http.put(
       Uri.parse('$baseUrl$endpoint/$id'),
       headers: headers,
       body: jsonEncode(invoice.toJson()),
     );
+
+    print(jsonDecode(response.body));
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       return Invoice.fromJson(jsonDecode(response.body));
@@ -148,6 +153,7 @@ class InvoiceService {
 
   // Delete invoice
   static Future<void> deleteInvoice(int id) async {
+    print("jj");
     final response = await http.delete(
       Uri.parse('$baseUrl$endpoint/$id'),
       headers: headers,
