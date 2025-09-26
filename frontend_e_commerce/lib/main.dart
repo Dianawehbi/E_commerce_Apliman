@@ -42,7 +42,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       title: 'E-commerce App',
-      theme: ThemeData(primarySwatch: Colors.lightGreen),
       routerConfig: AppRouter.router,
     );
   }

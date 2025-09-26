@@ -47,7 +47,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
           (item) => InvoiceItems(
             quantity: item.quantity,
             unitPrice: item.unitPrice,
-            itemId: item.itemId,
+            itemId: item.item?.id,
           ),
         )
         .toList();
