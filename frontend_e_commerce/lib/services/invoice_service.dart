@@ -65,7 +65,6 @@ class InvoiceService {
       Uri.parse('$baseUrl$endpoint/$id'),
       headers: headers,
     );
-    print(jsonDecode(response.body));
 
     if (response.statusCode == 200) {
       return Invoice.fromJson(jsonDecode(response.body));
@@ -134,14 +133,11 @@ class InvoiceService {
 
   // update invoice (must include all invoiceitems)
   static Future<Invoice> updateInvoice(int id, Invoice invoice) async {
-    print(jsonEncode(invoice.toJson()));
     final response = await http.put(
       Uri.parse('$baseUrl$endpoint/$id'),
       headers: headers,
       body: jsonEncode(invoice.toJson()),
     );
-
-    print(jsonDecode(response.body));
 
     if (response.statusCode == 200 || response.statusCode == 201) {
       return Invoice.fromJson(jsonDecode(response.body));

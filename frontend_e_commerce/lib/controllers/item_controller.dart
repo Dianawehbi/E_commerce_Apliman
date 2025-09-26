@@ -38,7 +38,6 @@ class ItemController extends ChangeNotifier {
     } catch (e) {
       items = [];
       errorMessage = e.toString();
-      print(e);
     } finally {
       isLoading = false;
       notifyListeners();
@@ -55,7 +54,6 @@ class ItemController extends ChangeNotifier {
       return item; // returns Item type
     } catch (e) {
       errorMessage = e.toString();
-      print("Error fetching item by id: $e");
       return null; // in case of error, return null
     } finally {
       notifyListeners();

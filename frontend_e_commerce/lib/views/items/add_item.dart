@@ -32,14 +32,14 @@ class _AddItemPageState extends State<AddItemPage> {
     if (_formKey.currentState!.validate()) {
       final itemProvider = context.read<ItemController>();
 
-      Item new_item = Item(
+      Item newItem = Item(
         itemName: _nameController.text,
         description: _descController.text,
         price: double.parse(_priceController.text),
         stockQuantity: int.parse(_stockController.text),
       );
 
-      final success = await itemProvider.addItem(new_item);
+      final success = await itemProvider.addItem(newItem);
 
       if (!mounted) return;
 

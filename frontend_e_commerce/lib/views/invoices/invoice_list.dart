@@ -19,7 +19,7 @@ class InvoiceListPage extends StatelessWidget {
 }
 
 class _InvoiceListPageBody extends StatefulWidget {
-  const _InvoiceListPageBody({super.key});
+  const _InvoiceListPageBody();
 
   @override
   State<_InvoiceListPageBody> createState() => _InvoiceListPageBodyState();

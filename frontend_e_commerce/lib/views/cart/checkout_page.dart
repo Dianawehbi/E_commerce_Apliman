@@ -53,13 +53,13 @@ class _CheckoutPageState extends State<CheckoutPage> {
         .toList();
 
     // create new Invoice
-    final new_invoice = Invoice(
+    final newInvoice = Invoice(
       id: -1,
       customerId: selectedCustomer!.id,
       invoiceItems: invoiceItems,
     );
 
-    await invoiceController.addInvoice(new_invoice);
+    await invoiceController.addInvoice(newInvoice);
 
     if (!mounted) return;
 

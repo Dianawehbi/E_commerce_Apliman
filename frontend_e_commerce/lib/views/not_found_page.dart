@@ -26,6 +26,7 @@ class NotFoundPage extends StatelessWidget {
               style: TextStyle(
                 fontSize: 120,
                 fontWeight: FontWeight.bold,
+                // ignore: deprecated_member_use
                 color: Colors.white.withOpacity(0.9),
               ),
             ),

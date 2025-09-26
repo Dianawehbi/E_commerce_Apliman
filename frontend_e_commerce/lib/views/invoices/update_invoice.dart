@@ -17,6 +17,7 @@ class UpdateInvoicePage extends StatefulWidget {
 class _UpdateInvoicePageState extends State<UpdateInvoicePage> {
   late InvoiceController invoiceController;
 
+  // ignore: non_constant_identifier_names
   late List<InvoiceItems> updated_items_list;
   late Invoice invoice;
 

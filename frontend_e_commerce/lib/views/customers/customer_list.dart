@@ -23,6 +23,7 @@ class _CustomerListState extends State<CustomerList> {
 
     // load customers once
     Future.microtask(() {
+      // ignore: use_build_context_synchronously
       context.read<CustomerController>().loadCustomers();
     });
   }

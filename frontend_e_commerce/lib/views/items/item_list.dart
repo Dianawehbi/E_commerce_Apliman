@@ -28,6 +28,7 @@ class _ItemListState extends State<ItemListPage> {
     _searchController = TextEditingController();
     // load items only once when entering this page
     Future.microtask(() {
+      // ignore: use_build_context_synchronously
       context.read<ItemController>().loadItems();
     });
   }

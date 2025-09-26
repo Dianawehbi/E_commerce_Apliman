@@ -95,7 +95,6 @@ class InvoiceController extends ChangeNotifier {
       totalPages = result.totalPages;
     } catch (e) {
       invoices = [];
-      print(e);
       errorMessage = e.toString();
     } finally {
       isLoading = false;

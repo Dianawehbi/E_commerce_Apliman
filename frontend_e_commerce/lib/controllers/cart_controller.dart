@@ -65,7 +65,6 @@ class CartController extends ChangeNotifier {
 
       notifyListeners();
     } catch (e) {
-      print(e);
       errorMessage = e.toString();
       notifyListeners();
     }
