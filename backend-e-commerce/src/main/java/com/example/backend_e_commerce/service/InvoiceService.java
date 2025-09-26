@@ -23,6 +23,7 @@ import com.example.backend_e_commerce.exceptions.ResourceNotFoundException;
 import com.example.backend_e_commerce.mapper.InvoiceItemMapper;
 import com.example.backend_e_commerce.mapper.InvoiceMapper;
 import com.example.backend_e_commerce.repository.CustomerRepository;
+import com.example.backend_e_commerce.repository.InvoiceItemRepository;
 import com.example.backend_e_commerce.repository.InvoiceRepository;
 import com.example.backend_e_commerce.repository.ItemRepository;
 
@@ -30,6 +31,8 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class InvoiceService {
+
+    private final InvoiceItemRepository invoiceItemRepository;
 
     @Autowired
     private InvoiceRepository repo;
@@ -45,6 +48,10 @@ public class InvoiceService {
 
     @Autowired
     private ItemRepository itemRepository;
+
+    InvoiceService(InvoiceItemRepository invoiceItemRepository) {
+        this.invoiceItemRepository = invoiceItemRepository;
+    }
 
     // get all invoices
     public Page<InvoiceResponseDTO> getAllInvoices(Pageable pageable) {
@@ -115,6 +122,8 @@ public class InvoiceService {
     @Transactional
     public InvoiceResponseDTO updateInvoice(int id, InvoiceRequestDTO invoiceRequestDTO) {
         Invoice existingInvoice = fetchInvoice(id);
+
+        System.out.println(invoiceRequestDTO);
         Customer customer = fetchCustomer(invoiceRequestDTO.getCustomerId());
         List<InvoiceItems> updatedInvoiceItems = new ArrayList<>();
         double totalAmount = 0.0;
@@ -141,8 +150,15 @@ public class InvoiceService {
         }
 
         // remove items that are no longer in the updated request
-        existingInvoice.getInvoiceItems().removeIf(ii -> updatedInvoiceItems.stream()
-                .noneMatch(updated -> updated.getItem().getId() == ii.getItem().getId()));
+        List<InvoiceItems> itemsToRemove = existingInvoice.getInvoiceItems().stream()
+                .filter(ii -> updatedInvoiceItems.stream()
+                        .noneMatch(updated -> updated.getItem().getId() == ii.getItem().getId()))
+                .toList();
+
+        for (InvoiceItems itemToRemove : itemsToRemove) {
+            invoiceItemRepository.delete(itemToRemove); // delete from DB
+            existingInvoice.getInvoiceItems().remove(itemToRemove); // remove from memory
+        }
 
         // update invoice
         existingInvoice.setCustomer(customer);
@@ -187,7 +203,7 @@ public class InvoiceService {
     }
 
     private InvoiceItems mapInvoiceItem(InvoiceItemsRequestDTO itemDTO, Item item, Invoice invoice) {
-        InvoiceItems invoiceItem = invoiceItemMapper.toEntity(itemDTO , itemRepository);
+        InvoiceItems invoiceItem = invoiceItemMapper.toEntity(itemDTO, itemRepository);
         invoiceItem.setItem(item);
         invoiceItem.setInvoice(invoice);
         invoiceItem.setUnitPrice(item.getPrice());
