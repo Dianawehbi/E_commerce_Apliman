@@ -91,3 +91,12 @@ GET /categories
 GET /categories/{id}
 
 POST /categories
+
+Demo
+
+<img src="demo/customers.list.png" alt="Alt text" width="300" height="200">
+<img src="demo/checkout.png.png" alt="Alt text" width="300" height="200">
+<img src="demo/item.list.png.list.png" alt="Alt text" width="300" height="200">
+<img src="demo/shopping.cart.png" alt="Alt text" width="300" height="200">
+
+// demo/... 

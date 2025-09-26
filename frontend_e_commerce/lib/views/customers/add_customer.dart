@@ -44,7 +44,7 @@ class _AddCustomerPageState extends State<AddCustomerPage> {
       if (success) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text("item added successfully"),
+            content: Text("Customer added successfully"),
             backgroundColor: Colors.lightGreen,
           ),
         );
