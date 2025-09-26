@@ -10,8 +10,12 @@ Full Stack E_commerce_Apliman
   /frontend           # Flutter project
 
 
-## 1) Database setup (MySQL) CREATE DATABASE ecommerce_apliman_db; ## 2) Backend (Spring Boot) — run locally From the /backend folder:
-bash
+## 1) Database setup (MySQL) 
+
+CREATE DATABASE ecommerce_apliman_db; 
+
+## 2) Backend (Spring Boot) — run locally From the /backend folder:
+
 ````
 ./mvnw clean package
 ./mvnw spring-boot:run
@@ -21,7 +25,7 @@ will automatically create your data base tables
 The API should be reachable at http://localhost:8080/ 
 
 ## 3) Frontend (Flutter) — run locally ### Run the app From the /frontend folder:
-bash
+
 ````
 flutter packages pub run build_runner build
 flutter pub get
@@ -82,9 +86,9 @@ checklist for more details go to : backend/src/main/java/controller/documentatio
 
 ## 5) Demo
 
-<img src="demo/customers.list.png" alt="Alt text" width="300" height="200">
-<img src="demo/checkout.png" alt="Alt text" width="300" height="200">
-<img src="demo/item.list.png" alt="Alt text" width="300" height="200">
-<img src="demo/shopping.cart.png" alt="Alt text" width="300" height="200">
+<img src="demo/customers.list.png" alt="Alt text" width="400" >
+<img src="demo/checkout.png" alt="Alt text" width="400" >
+<img src="demo/item.list.png" alt="Alt text" width="400" >
+<img src="demo/shopping.cart.png" alt="Alt text" width="400" >
 
 // demo/... 
