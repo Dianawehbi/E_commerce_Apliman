@@ -5,44 +5,43 @@ import 'package:frontend_e_commerce/widgets/invoice_card_widget.dart';
 import 'package:frontend_e_commerce/widgets/pagination_widget.dart';
 import 'package:provider/provider.dart';
 
-class InvoiceListPage extends StatefulWidget {
+class InvoiceListPage extends StatelessWidget {
   const InvoiceListPage({super.key});
 
   @override
-  State<InvoiceListPage> createState() => _InvoiceListPageState();
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) =>
+          InvoiceController()..loadInvoices(), // load initial invoices
+      child: const _InvoiceListPageBody(),
+    );
+  }
 }
 
-class _InvoiceListPageState extends State<InvoiceListPage> {
+class _InvoiceListPageBody extends StatefulWidget {
+  const _InvoiceListPageBody({super.key});
+
+  @override
+  State<_InvoiceListPageBody> createState() => _InvoiceListPageBodyState();
+}
+
+class _InvoiceListPageBodyState extends State<_InvoiceListPageBody> {
   late TextEditingController _searchController;
-  late InvoiceController invoiceController;
 
   @override
   void initState() {
     super.initState();
     _searchController = TextEditingController();
-    invoiceController = InvoiceController();
-    _loadInvoices();
-  }
-
-  Future<void> _loadInvoices() async {
-    try {
-      await invoiceController.loadInvoices();
-    } catch (e) {
-      debugPrint("Error loading invoices: $e");
-    }
   }
 
   void _searchInvoices() {
-    final ctrl = context.read<InvoiceController>();
-    final text = _searchController.text;
+    final controller = context.read<InvoiceController>();
+    final text = _searchController.text.trim();
 
     if (text.isNotEmpty) {
-      final customerId = int.tryParse(text);
-      if (customerId != null) {
-        ctrl.loadInvoicesByCustomerId(customerId);
-      }
+      controller.setSearchQuery(text);
     } else {
-      ctrl.loadInvoices(page: 1);
+      controller.loadInvoices(page: 1); // reload all invoices
     }
   }
 
@@ -54,6 +53,8 @@ class _InvoiceListPageState extends State<InvoiceListPage> {
 
   @override
   Widget build(BuildContext context) {
+    final controller = context.watch<InvoiceController>();
+
     return Scaffold(
       appBar: const AppNavBar(title: "Invoices"),
       body: Padding(
@@ -67,7 +68,7 @@ class _InvoiceListPageState extends State<InvoiceListPage> {
                   child: TextField(
                     controller: _searchController,
                     decoration: InputDecoration(
-                      hintText: "Search invoices by Customer ID...",
+                      hintText: "Search invoices by Customer's Name...",
                       prefixIcon: const Icon(Icons.search),
                       suffixIcon: IconButton(
                         icon: const Icon(Icons.arrow_forward_ios, size: 16),
@@ -84,7 +85,6 @@ class _InvoiceListPageState extends State<InvoiceListPage> {
                         borderSide: BorderSide.none,
                       ),
                     ),
-                    keyboardType: TextInputType.number,
                     onSubmitted: (_) => _searchInvoices(),
                   ),
                 ),
@@ -108,54 +108,44 @@ class _InvoiceListPageState extends State<InvoiceListPage> {
 
             // Invoices list
             Expanded(
-              child: ChangeNotifierProvider<InvoiceController>.value(
-                value: invoiceController,
-                child: Consumer<InvoiceController>(
-                  builder: (context, controller, _) {
-                    // Loading
-                    if (invoiceController.isLoading) {
-                      return const Center(child: CircularProgressIndicator());
-                    }
+              child: Builder(
+                builder: (_) {
+                  if (controller.isLoading) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
 
-                    // Error
-                    if (invoiceController.errorMessage.isNotEmpty) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: Text(
-                          invoiceController.errorMessage,
-                          style: const TextStyle(color: Colors.red),
-                        ),
-                      );
-                    }
-
-                    // Empty
-                    if (!invoiceController.isLoading &&
-                        invoiceController.invoices.isEmpty) {
-                      return const Center(child: Text("No invoices found"));
-                    }
-
-                    // Invoices list + pagination
-                    return Column(
-                      children: [
-                        Expanded(
-                          child: ListView.builder(
-                            itemCount: invoiceController.invoices.length,
-                            itemBuilder: (_, index) {
-                              final invoice = invoiceController.invoices[index];
-                              return InvoiceCardWidget(
-                                invoice: invoice,
-                                onDelete: () => invoiceController.deleteInvoice(
-                                  invoice.id!,
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                        PaginationWidget(controller: invoiceController),
-                      ],
+                  if (controller.errorMessage.isNotEmpty) {
+                    return Center(
+                      child: Text(
+                        controller.errorMessage,
+                        style: const TextStyle(color: Colors.red),
+                      ),
                     );
-                  },
-                ),
+                  }
+
+                  if (controller.invoices.isEmpty) {
+                    return const Center(child: Text("No invoices found"));
+                  }
+
+                  return Column(
+                    children: [
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: controller.invoices.length,
+                          itemBuilder: (_, index) {
+                            final invoice = controller.invoices[index];
+                            return InvoiceCardWidget(
+                              invoice: invoice,
+                              onDelete: () =>
+                                  controller.deleteInvoice(invoice.id!),
+                            );
+                          },
+                        ),
+                      ),
+                      PaginationWidget(controller: controller),
+                    ],
+                  );
+                },
               ),
             ),
           ],

@@ -31,7 +31,7 @@ class InvoiceService {
     }
   }
 
-  // Fetch all invoices with pagination
+  // fetch all invoices with pagination
   static Future<PagedResponse<Invoice>> fetchInvoices({
     int page = 0,
     int size = 10,
@@ -59,7 +59,7 @@ class InvoiceService {
     }
   }
 
-  // Get invoice by ID
+  // get invoice by ID
   static Future<Invoice> getInvoiceById(int id) async {
     final response = await http.get(
       Uri.parse('$baseUrl$endpoint/$id'),
@@ -74,7 +74,7 @@ class InvoiceService {
     }
   }
 
-  // Get invoices by customer ID
+  // get invoices by customer ID
   static Future<PagedResponse<Invoice>> getInvoicesByCustomerId(
     int customerId, {
     int page = 0,
@@ -103,7 +103,7 @@ class InvoiceService {
     }
   }
 
-  // Get invoices by customer name
+  // get invoices by customer name
   static Future<PagedResponse<Invoice>> getInvoicesByCustomerName(
     String customerName, {
     int page = 0,
@@ -122,18 +122,17 @@ class InvoiceService {
       final invoices = (data['content'] as List)
           .map((json) => Invoice.fromJson(json))
           .toList();
-
       return PagedResponse<Invoice>(
         objects: invoices,
         totalPages: data['totalPages'] ?? 1,
-        currentPage: data['pageable']['pageNumber'] ?? page,
+        currentPage: page,
       );
     } else {
       throw ApiException(response.statusCode, response.body);
     }
   }
 
-  // Update invoice (must include all invoiceitems)
+  // update invoice (must include all invoiceitems)
   static Future<Invoice> updateInvoice(int id, Invoice invoice) async {
     print(jsonEncode(invoice.toJson()));
     final response = await http.put(
@@ -151,15 +150,14 @@ class InvoiceService {
     }
   }
 
-  // Delete invoice
+  // delete invoice
   static Future<void> deleteInvoice(int id) async {
-    print("jj");
     final response = await http.delete(
       Uri.parse('$baseUrl$endpoint/$id'),
       headers: headers,
     );
     if (response.statusCode != 200 && response.statusCode != 204) {
-      throw ApiException(response.statusCode, response.body);
+      throw ApiException(response.statusCode, jsonDecode(response.body)['message']);
     }
   }
 }

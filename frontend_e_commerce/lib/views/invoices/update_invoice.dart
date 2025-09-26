@@ -118,7 +118,6 @@ class _UpdateInvoicePageState extends State<UpdateInvoicePage> {
           backgroundColor: Colors.lightGreen,
         ),
       );
-      Navigator.pop(context);
     }
   }
 

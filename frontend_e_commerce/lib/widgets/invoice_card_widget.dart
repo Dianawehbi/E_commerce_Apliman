@@ -16,14 +16,6 @@ class InvoiceCardWidget extends StatefulWidget {
 }
 
 class _InvoiceCardWidgetState extends State<InvoiceCardWidget> {
-  late Invoice invoice;
-
-  @override
-  void initState() {
-    super.initState();
-    invoice = widget.invoice;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -31,24 +23,24 @@ class _InvoiceCardWidgetState extends State<InvoiceCardWidget> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       elevation: 2,
       child: ExpansionTile(
-        title: Text("Invoice #${invoice.id}"),
+        title: Text("Invoice #${widget.invoice.id}"),
         subtitle: Text(
-          "Customer ID: ${invoice.customerId} | Total: \$${invoice.totalAmount?.toStringAsFixed(2) ?? "0.00"} | Items: ${invoice.invoiceItems.length}",
+          "Customer ID: ${widget.invoice.customerId} | Total: \$${widget.invoice.totalAmount?.toStringAsFixed(2) ?? "0.00"} | Items: ${widget.invoice.invoiceItems.length}",
         ),
         childrenPadding: const EdgeInsets.symmetric(
           vertical: 4,
           horizontal: 16,
         ),
         children: [
-          if (invoice.invoiceDate != null)
+          if (widget.invoice.invoiceDate != null)
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: Text(
-                "Date: ${invoice.invoiceDate!.toLocal().toString().split(' ')[0]}",
+                "Date: ${widget.invoice.invoiceDate!.toLocal().toString().split(' ')[0]}",
               ),
             ),
           const Divider(),
-          ...invoice.invoiceItems.map(
+          ...widget.invoice.invoiceItems.map(
             (item) => ListTile(
               dense: true,
               title: Text("Item: ${item.item!.itemName}"),
@@ -69,7 +61,8 @@ class _InvoiceCardWidgetState extends State<InvoiceCardWidget> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 TextButton.icon(
-                  onPressed: () => context.go('/invoices/update/${invoice.id}'),
+                  onPressed: () =>
+                      context.go('/invoices/update/${widget.invoice.id}'),
                   icon: const Icon(Icons.edit, color: Colors.blue),
                   label: const Text(
                     "Edit",
@@ -78,7 +71,7 @@ class _InvoiceCardWidgetState extends State<InvoiceCardWidget> {
                 ),
                 const SizedBox(width: 8),
                 TextButton.icon(
-                  onPressed: widget.onDelete,
+                  onPressed: widget.onDelete, // <-- works correctly now
                   icon: const Icon(Icons.delete, color: Colors.red),
                   label: const Text(
                     "Delete",
