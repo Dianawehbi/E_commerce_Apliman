@@ -4,12 +4,6 @@ Full Stack E_commerce_Apliman
 
 --- 
 
-## Repo structure (expected)
-/E_commerce_Apliman
-  /backend            # Spring Boot project
-  /frontend           # Flutter project
-
-
 ## 1) Database setup (MySQL) 
 
 CREATE DATABASE ecommerce_apliman_db; 
