@@ -1,0 +1,43 @@
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="5" author="user_">
+        <createTable tableName="invoice_items">
+            <column name="id" type="INT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="invoice_id" type="INT">
+                <constraints nullable="false" />
+            </column>
+            <column name="item_id" type="INT">
+                <constraints nullable="false" />
+            </column>
+            <column name="quantity" type="INT">
+                <constraints nullable="false" />
+            </column>
+            <column name="unit_price" type="DECIMAL(10,2)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint
+            constraintName="invoice_id"
+            baseTableName="invoice_items"
+            baseColumnNames="invoice_id"
+            referencedTableName="invoices"
+            referencedColumnNames="id"
+            onDelete="CASCADE"
+            onUpdate="CASCADE" />
+
+        <addForeignKeyConstraint constraintName="item_id"
+            baseTableName="invoice_items"
+            baseColumnNames="item_id"
+            referencedTableName="items"
+            referencedColumnNames="id"
+            onDelete="RESTRICT"
+            onUpdate="CASCADE" />
+    </changeSet>
+
+</databaseChangeLog>

@@ -1,0 +1,28 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="4" author="user_">
+        <createTable tableName="invoices">
+            <column name="id" type="INT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="customer_id" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="invoice_date" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP"/>
+            <column name="total_amount" type="DECIMAL(10,2)" defaultValueNumeric="0.00"/>
+        </createTable>
+
+        <addForeignKeyConstraint constraintName="customer_id" 
+            baseTableName="invoices"
+            baseColumnNames="customer_id"
+            referencedTableName="customers"
+            referencedColumnNames="id"
+            onDelete="CASCADE"
+            onUpdate="CASCADE"/>
+    </changeSet>
+
+</databaseChangeLog>
