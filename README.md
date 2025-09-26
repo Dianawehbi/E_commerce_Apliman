@@ -1,102 +1,90 @@
-E_commerce_Apliman
+**Project:** 
 
-Project: Full Stack E_commerce_Apliman
+Full Stack E_commerce_Apliman 
 
-Repo Structure (Expected)
+--- 
+
+## Repo structure (expected)
 /E_commerce_Apliman
   /backend            # Spring Boot project
   /frontend           # Flutter project
 
-1) Database Setup (MySQL)
-CREATE DATABASE ecommerce_apliman_db;
 
-2) Backend (Spring Boot) — Run Locally
-
-From the /backend folder:
-
+## 1) Database setup (MySQL) CREATE DATABASE ecommerce_apliman_db; ## 2) Backend (Spring Boot) — run locally From the /backend folder:
+bash
+````
 ./mvnw clean package
 ./mvnw spring-boot:run
+````
 
+will automatically create your data base tables 
+The API should be reachable at http://localhost:8080/ 
 
-This will automatically create your database tables.
-
-The API should be reachable at:
-
-http://localhost:8080/
-
-3) Frontend (Flutter) — Run Locally
-Run the App
-
-From the /frontend folder:
-
+## 3) Frontend (Flutter) — run locally ### Run the app From the /frontend folder:
+bash
+````
 flutter packages pub run build_runner build
 flutter pub get
 flutter run -d chrome
+````
 
-4) API Endpoints Checklist
+--- 
 
-For more details, go to:
-backend/src/main/java/controller/documentation
+## 4) API endpoints 
 
-Customers
+checklist for more details go to : backend/src/main/java/controller/documentation 
 
-GET /customers?page=0&size=10 — Get all customers (paged)
+* GET /customers?page=0&size=10 — get all customers (paged) 
 
-GET /customers/{id}
+* GET /customers/{id} 
 
-GET /customers/search?name=...
+* GET /customers/search?name=... 
 
-POST /customers
+* POST /customers 
 
-PUT /customers/{id}
+* PUT /customers/{id} 
 
-DELETE /customers/{id}
+* DELETE /customers/{id} 
 
-Items
+* GET /items?page=0&size=10 
 
-GET /items?page=0&size=10
+* GET /items/{id} 
 
-GET /items/{id}
+* GET /items/search?name=... 
 
-GET /items/search?name=...
+* POST /items 
 
-POST /items
+* PUT /items/{id} 
 
-PUT /items/{id}
+* DELETE /items/{id} 
 
-DELETE /items/{id}
+* GET /invoices?page=0&size=10 
 
-Invoices
+* GET /invoices/customer_id/{id} 
 
-GET /invoices?page=0&size=10
+* GET /invoices/customer_name/{customer_name} 
 
-GET /invoices/customer_id/{id}
+* GET /invoices/{id} 
 
-GET /invoices/customer_name/{customer_name}
+* GET /invoices/customer/{customerId} 
 
-GET /invoices/{id}
+* PUT /invoices/{id} 
 
-GET /invoices/customer/{customerId}
+* POST /invoices — single endpoint to create invoice + items (transactional) 
 
-PUT /invoices/{id}
+* DELETE /invoices/{id} 
 
-POST /invoices — Single endpoint to create invoice + items (transactional)
+* GET /categories 
 
-DELETE /invoices/{id}
+* GET /categories/{id} 
 
-Categories
+* POST /categories ---
 
-GET /categories
-
-GET /categories/{id}
-
-POST /categories
-
-Demo
+## 5) Demo
 
 <img src="demo/customers.list.png" alt="Alt text" width="300" height="200">
-<img src="demo/checkout.png.png" alt="Alt text" width="300" height="200">
-<img src="demo/item.list.png.list.png" alt="Alt text" width="300" height="200">
+<img src="demo/checkout.png" alt="Alt text" width="300" height="200">
+<img src="demo/item.list.png" alt="Alt text" width="300" height="200">
 <img src="demo/shopping.cart.png" alt="Alt text" width="300" height="200">
 
 // demo/... 
