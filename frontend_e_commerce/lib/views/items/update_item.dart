@@ -64,33 +64,40 @@ class _UpdateItemPageState extends State<UpdateItemPage> {
     if (!_formKey.currentState!.validate()) return;
 
     final itemProvider = context.read<ItemController>();
-    final updatedItem = Item(
-      id: widget.itemId,
-      itemName: _nameController.text,
-      description: _descController.text,
-      price: double.parse(_priceController.text),
-      stockQuantity: int.parse(_stockController.text),
-    );
-
-    final success = await itemProvider.updateItem(widget.itemId, updatedItem);
-
-    if (!mounted) return;
-
-    if (success) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Item updated successfully"),
-          backgroundColor: Colors.lightGreen,
-        ),
-      );
-      Navigator.pop(context, true); // return to previous page
+    if (int.parse(_stockController.text) < 0 || double.parse(_priceController.text) < 0) {
+      setState(() {
+        _errorMessage = "Please enter a valid number";
+        return;
+      });
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Failed: ${itemProvider.errorMessage}"),
-          backgroundColor: Colors.redAccent,
-        ),
+      final updatedItem = Item(
+        id: widget.itemId,
+        itemName: _nameController.text,
+        description: _descController.text,
+        price: double.parse(_priceController.text),
+        stockQuantity: int.parse(_stockController.text),
       );
+
+      final success = await itemProvider.updateItem(widget.itemId, updatedItem);
+
+      if (!mounted) return;
+
+      if (success) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("Item updated successfully"),
+            backgroundColor: Colors.lightGreen,
+          ),
+        );
+        Navigator.pop(context, true); // return to previous page
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Failed: ${itemProvider.errorMessage}"),
+            backgroundColor: Colors.redAccent,
+          ),
+        );
+      }
     }
   }
 
@@ -105,161 +112,139 @@ class _UpdateItemPageState extends State<UpdateItemPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ItemController>(
-      builder: (context, itemProvider, child) {
-        if (_isLoading) {
-          return const Scaffold(
-            body: Center(child: CircularProgressIndicator()),
-          );
-        }
+    if (_isLoading) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
 
-        if (_errorMessage.isNotEmpty) {
-          return Scaffold(
-            appBar: const AppNavBar(title: "Update Item"),
-            body: Center(
-              child: Text(
-                _errorMessage,
-                style: const TextStyle(color: Colors.red),
+    return Scaffold(
+      appBar: const AppNavBar(title: "Update Item"),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 600, minHeight: 400),
+            child: Card(
+              elevation: 8,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
               ),
-            ),
-          );
-        }
-
-        return Scaffold(
-          appBar: const AppNavBar(title: "Update Item"),
-          body: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
-            child: Center(
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(
-                  maxWidth: 600,
-                  minHeight: 400,
-                ),
-                child: Card(
-                  elevation: 8,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(32.0),
-                    child: Form(
-                      key: _formKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
+              child: Padding(
+                padding: const EdgeInsets.all(32.0),
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      // Header
+                      Column(
                         children: [
-                          // Header
-                          Column(
-                            children: [
-                              Icon(
-                                Icons.edit_rounded,
-                                size: 48,
-                                color: Theme.of(context).colorScheme.primary,
-                              ),
-                              const SizedBox(height: 16),
-                              Text(
-                                "Update Item",
-                                style: Theme.of(context).textTheme.headlineSmall
-                                    ?.copyWith(
-                                      fontWeight: FontWeight.bold,
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.primary,
-                                    ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                "Edit the item details below",
-                                style: Theme.of(context).textTheme.bodyMedium
-                                    ?.copyWith(color: Colors.grey[600]),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 32),
-
-                          // Item fields
-                          FormTextFieldWidget(
-                            textController: _nameController,
-                            label: "Item Name",
-                            icon: Icons.drive_file_rename_outline,
-                            validator: (value) => value!.isEmpty
-                                ? "Please enter item name"
-                                : null,
+                          Icon(
+                            Icons.edit_rounded,
+                            size: 48,
+                            color: Theme.of(context).colorScheme.primary,
                           ),
                           const SizedBox(height: 16),
-                          TextFormField(
-                            controller: _descController,
-                            decoration: InputDecoration(
-                              labelText: "Description",
-                              prefixIcon: const Icon(
-                                Icons.description_outlined,
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              filled: true,
-                              fillColor: Colors.grey[50],
-                            ),
-                            maxLines: 3,
-                            validator: (value) => value!.isEmpty
-                                ? "Please enter description"
-                                : null,
+                          Text(
+                            "Update Item",
+                            style: Theme.of(context).textTheme.headlineSmall
+                                ?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context).colorScheme.primary,
+                                ),
                           ),
-                          const SizedBox(height: 16),
-                          FormTextFieldWidget(
-                            textController: _priceController,
-                            label: "Price",
-                            icon: Icons.attach_money,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Enter price";
-                              }
-                              if (double.tryParse(value) == null) {
-                                return "Invalid number";
-                              }
-                              return null;
-                            },
+                          const SizedBox(height: 8),
+                          Text(
+                            "Edit the item details below",
+                            style: Theme.of(context).textTheme.bodyMedium
+                                ?.copyWith(color: Colors.grey[600]),
                           ),
-                          const SizedBox(height: 16),
-
-                          FormTextFieldWidget(
-                            textController: _stockController,
-                            label: "Stock Quantity",
-                            icon: Icons.inventory_2_outlined,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return "Enter qunatity";
-                              }
-                              if (double.tryParse(value) == null) {
-                                return "Invalid number";
-                              }
-                              return null;
-                            },
-                          ),
-                          const SizedBox(height: 24),
-
-                          // Buttons
-                          ElevatedButton(
-                            onPressed: _updateItem,
-                            child: const Text("Update Item"),
-                          ),
-                          const SizedBox(height: 16),
-                          TextButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: Text(
-                              "Cancel",
-                              style: TextStyle(color: Colors.grey[600]),
-                            ),
-                          ),
+                          const SizedBox(height: 8),
+                          ?_errorMessage.isNotEmpty ? Text(
+                            _errorMessage,
+                            style: const TextStyle(color: Colors.red),
+                          ) : null
                         ],
                       ),
-                    ),
+                      const SizedBox(height: 32),
+
+                      // Item fields
+                      FormTextFieldWidget(
+                        textController: _nameController,
+                        label: "Item Name",
+                        icon: Icons.drive_file_rename_outline,
+                        validator: (value) =>
+                            value!.isEmpty ? "Please enter item name" : null,
+                      ),
+                      const SizedBox(height: 16),
+                      TextFormField(
+                        controller: _descController,
+                        decoration: InputDecoration(
+                          labelText: "Description",
+                          prefixIcon: const Icon(Icons.description_outlined),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          filled: true,
+                          fillColor: Colors.grey[50],
+                        ),
+                        maxLines: 3,
+                        validator: (value) =>
+                            value!.isEmpty ? "Please enter description" : null,
+                      ),
+                      const SizedBox(height: 16),
+                      FormTextFieldWidget(
+                        textController: _priceController,
+                        label: "Price",
+                        icon: Icons.attach_money,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Enter price";
+                          }
+                          if (double.tryParse(value) == null) {
+                            return "Invalid number";
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 16),
+
+                      FormTextFieldWidget(
+                        textController: _stockController,
+                        label: "Stock Quantity",
+                        icon: Icons.inventory_2_outlined,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return "Enter qunatity";
+                          }
+                          if (double.tryParse(value) == null) {
+                            return "Invalid number";
+                          }
+                          return null;
+                        },
+                      ),
+                      const SizedBox(height: 24),
+
+                      // Buttons
+                      ElevatedButton(
+                        onPressed: _updateItem,
+                        child: const Text("Update Item"),
+                      ),
+                      const SizedBox(height: 16),
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: Text(
+                          "Cancel",
+                          style: TextStyle(color: Colors.grey[600]),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
             ),
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 }

@@ -35,9 +35,9 @@ class CartController extends ChangeNotifier {
   // add or update item
   Future<void> addItem(Item item, int quantity) async {
     try {
+      notifyListeners();
       cartItems = Map<int, InvoiceItems>.from(cartBox.toMap());
       final existing = cartItems[item.id];
-
       int newQuantity;
 
       if (existing != null) {
@@ -58,7 +58,6 @@ class CartController extends ChangeNotifier {
           unitPrice: item.price,
           item: item,
         );
-
         await cartBox.put(item.id, invoiceItem);
         cartItems[item.id!] = invoiceItem; // update in memory
       }

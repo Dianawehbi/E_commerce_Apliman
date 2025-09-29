@@ -124,4 +124,9 @@ class ItemController extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<void> setErrorMessage(String err) async {
+    errorMessage = err;
+    notifyListeners();
+  }
 }

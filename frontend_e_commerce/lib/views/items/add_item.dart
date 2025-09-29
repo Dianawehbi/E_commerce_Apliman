@@ -19,6 +19,8 @@ class _AddItemPageState extends State<AddItemPage> {
   final TextEditingController _priceController = TextEditingController();
   final TextEditingController _stockController = TextEditingController();
 
+  String _errorMessage = '';
+
   @override
   void dispose() {
     _nameController.dispose();
@@ -32,35 +34,43 @@ class _AddItemPageState extends State<AddItemPage> {
     if (_formKey.currentState!.validate()) {
       final itemProvider = context.read<ItemController>();
 
-      Item newItem = Item(
-        itemName: _nameController.text,
-        description: _descController.text,
-        price: double.parse(_priceController.text),
-        stockQuantity: int.parse(_stockController.text),
-      );
-
-      final success = await itemProvider.addItem(newItem);
-
-      if (!mounted) return;
-
-      if (success) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("item added successfully"),
-            backgroundColor: Colors.lightGreen,
-          ),
-        );
-        _nameController.clear();
-        _descController.clear();
-        _priceController.clear();
-        _stockController.clear();
+      if (int.parse(_stockController.text) < 0 ||
+          double.parse(_priceController.text) < 0) {
+        setState(() {
+          _errorMessage = "Please enter a valid number";
+        });
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text("Failed: ${itemProvider.errorMessage}"),
-            backgroundColor: Colors.redAccent,
-          ),
+        Item newItem = Item(
+          itemName: _nameController.text,
+          description: _descController.text,
+          price: double.parse(_priceController.text),
+          stockQuantity: int.parse(_stockController.text),
         );
+
+        final success = await itemProvider.addItem(newItem);
+
+        if (!mounted) return;
+
+        if (success) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text("item added successfully"),
+              backgroundColor: Colors.lightGreen,
+            ),
+          );
+          _errorMessage = '';
+          _nameController.clear();
+          _descController.clear();
+          _priceController.clear();
+          _stockController.clear();
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text("Failed: ${itemProvider.errorMessage}"),
+              backgroundColor: Colors.redAccent,
+            ),
+          );
+        }
       }
     }
   }
@@ -113,6 +123,13 @@ class _AddItemPageState extends State<AddItemPage> {
                               style: Theme.of(context).textTheme.bodyMedium
                                   ?.copyWith(color: Colors.grey[600]),
                             ),
+                            const SizedBox(height: 8),
+                            ?_errorMessage.isNotEmpty
+                                ? Text(
+                                    _errorMessage,
+                                    style: const TextStyle(color: Colors.red),
+                                  )
+                                : null,
 
                             // on error
                             if (itemController.errorMessage.isNotEmpty)

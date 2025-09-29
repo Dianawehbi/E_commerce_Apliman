@@ -24,22 +24,18 @@ class _CheckoutPageState extends State<CheckoutPage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final customerController = context.read<CustomerController>();
-      customerController.loadCustomers(page: 1, size: 10);
-    });
   }
 
-  void _saveInvoice(
-    InvoiceController invoiceController,
-    CartController cartController,
-  ) async {
+  void _saveInvoice() async {
     if (selectedCustomer == null) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text("Please select a customer")));
       return;
     }
+
+    final invoiceController = context.read<InvoiceController>();
+    final cartController = context.read<CartController>();
 
     // save InvoiceItems as list
     final List<InvoiceItems> invoiceItems = cartController.cartItems.values
@@ -83,6 +79,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
 
   @override
   Widget build(BuildContext context) {
+    var customerController = context.watch<CustomerController>();
+    var cartController = context.watch<CartController>();
     return Scaffold(
       appBar: const AppNavBar(title: "Checkout"),
       body: SingleChildScrollView(
@@ -122,77 +120,63 @@ class _CheckoutPageState extends State<CheckoutPage> {
                           "Select a customer to save this invoice",
                           style: TextStyle(color: Colors.grey[600]),
                         ),
-                        if (errorMessage.isNotEmpty)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 8.0),
-                            child: Text(
-                              errorMessage,
-                              style: const TextStyle(color: Colors.red),
-                            ),
-                          ),
                       ],
                     ),
                     const SizedBox(height: 32),
 
                     // Customer Selection
-                    Consumer<CustomerController>(
-                      builder: (context, customerController, child) {
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Text(
-                              "Select Customer",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.grey),
-                                borderRadius: BorderRadius.circular(12),
-                                color: Colors.grey[50],
-                              ),
-                              constraints: const BoxConstraints(maxHeight: 200),
-                              child: customerController.isLoading
-                                  ? const Center(
-                                      child: CircularProgressIndicator(),
-                                    )
-                                  : customerController.customers.isEmpty
-                                  ? const Center(
-                                      child: Text("No customers available"),
-                                    )
-                                  : Scrollbar(
-                                      controller: _scrollController,
-                                      thumbVisibility: true,
-                                      child: ListView.builder(
-                                        shrinkWrap: true,
-                                        itemCount:
-                                            customerController.customers.length,
-                                        itemBuilder: (context, index) {
-                                          final customer = customerController
-                                              .customers[index];
-                                          return ListTile(
-                                            title: Text(
-                                              "${customer.username} | ${customer.email} | ID: ${customer.id}",
-                                            ),
-                                            selected:
-                                                selectedCustomer == customer,
-                                            onTap: () => setState(() {
-                                              selectedCustomer = customer;
-                                            }),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                            ),
-                            PaginationWidget(controller: customerController),
-                          ],
-                        );
-                      },
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "Select Customer",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                            borderRadius: BorderRadius.circular(12),
+                            color: Colors.grey[50],
+                          ),
+                          constraints: const BoxConstraints(maxHeight: 200),
+                          child: customerController.isLoading
+                              ? const Center(child: CircularProgressIndicator())
+                              : customerController.customers.isEmpty
+                              ? const Center(
+                                  child: Text("No customers available"),
+                                )
+                              : Scrollbar(
+                                  controller: _scrollController,
+                                  thumbVisibility: true,
+                                  child: ListView.builder(
+                                    shrinkWrap: true,
+                                    itemCount:
+                                        customerController.customers.length,
+                                    itemBuilder: (context, index) {
+                                      final customer =
+                                          customerController.customers[index];
+                                      return ListTile(
+                                        title: Text(
+                                          "${customer.username} | ${customer.email} | ID: ${customer.id}",
+                                        ),
+                                        selected: selectedCustomer == customer,
+                                        onTap: () => setState(() {
+                                          selectedCustomer = customer;
+                                        }),
+                                      );
+                                    },
+                                  ),
+                                ),
+                        ),
+                        PaginationWidget(controller: customerController),
+                      ],
                     ),
+
                     const SizedBox(height: 16),
 
                     // add customer Button
@@ -212,51 +196,42 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     const SizedBox(height: 32),
 
                     // General Info + Save
-                    Consumer2<CartController, InvoiceController>(
-                      builder: (context, cartController, invoiceController, child) {
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text("Items: ${cartController.totalQuantity}"),
-                                Text(
-                                  "Total: \$${cartController.totalPrice.toStringAsFixed(2)}",
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 24),
-
-                            SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                onPressed: () => _saveInvoice(
-                                  invoiceController,
-                                  cartController,
-                                ),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Theme.of(
-                                    context,
-                                  ).colorScheme.primary,
-                                  foregroundColor: Colors.white,
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 16,
-                                  ),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12),
-                                  ),
-                                  elevation: 2,
-                                ),
-                                child: const Text(
-                                  "Save Invoice",
-                                  style: TextStyle(fontSize: 16),
-                                ),
-                              ),
+                            Text("Items: ${cartController.totalQuantity}"),
+                            Text(
+                              "Total: \$${cartController.totalPrice.toStringAsFixed(2)}",
                             ),
                           ],
-                        );
-                      },
+                        ),
+                        const SizedBox(height: 24),
+
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: () => _saveInvoice(),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Theme.of(
+                                context,
+                              ).colorScheme.primary,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              elevation: 2,
+                            ),
+                            child: const Text(
+                              "Save Invoice",
+                              style: TextStyle(fontSize: 16),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),

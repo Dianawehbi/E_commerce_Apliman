@@ -38,11 +38,8 @@ class _InvoiceListPageBodyState extends State<_InvoiceListPageBody> {
     final controller = context.read<InvoiceController>();
     final text = _searchController.text.trim();
 
-    if (text.isNotEmpty) {
       controller.setSearchQuery(text);
-    } else {
-      controller.loadInvoices(page: 1); // reload all invoices
-    }
+  
   }
 
   @override

@@ -63,7 +63,7 @@ class _UpdateCustomerPageState extends State<UpdateCustomerPage> {
     }
   }
 
-  Future<void> _updateCustomer(CustomerController customerProvider) async {
+  Future<void> _updateCustomer() async {
     if (!_formKey.currentState!.validate()) return;
 
     final customerProvider = context.read<CustomerController>();
@@ -111,10 +111,6 @@ class _UpdateCustomerPageState extends State<UpdateCustomerPage> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => CustomerController(),
-      child: Consumer<CustomerController>(
-        builder: (context, customerProvider, child) {
           if (_isLoading) {
             return const Scaffold(
               body: Center(child: CircularProgressIndicator()),
@@ -281,7 +277,7 @@ class _UpdateCustomerPageState extends State<UpdateCustomerPage> {
                             // Update Button
                             ElevatedButton(
                               onPressed: () =>
-                                  _updateCustomer(customerProvider),
+                                  _updateCustomer(),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Theme.of(
                                   context,
@@ -333,8 +329,5 @@ class _UpdateCustomerPageState extends State<UpdateCustomerPage> {
               ),
             ),
           );
-        },
-      ),
-    );
-  }
+        }
 }

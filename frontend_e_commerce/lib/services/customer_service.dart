@@ -36,7 +36,6 @@ class CustomerService {
     String search = "",
   }) async {
     final params = {'page': '$page', 'size': '$size'};
-
     final response = await http
         .get(
           Uri.parse('$baseUrl$endpoint').replace(queryParameters: params),
@@ -117,7 +116,10 @@ class CustomerService {
     if (response.statusCode == 200 || response.statusCode == 201) {
       return Customer.fromJson(jsonDecode(response.body));
     } else {
-      throw ApiException(response.statusCode, jsonDecode(response.body)['message']);
+      throw ApiException(
+        response.statusCode,
+        jsonDecode(response.body)['message'],
+      );
     }
   }
 

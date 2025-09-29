@@ -20,12 +20,6 @@ class _CustomerListState extends State<CustomerList> {
   void initState() {
     super.initState();
     _searchController = TextEditingController();
-
-    // load customers once
-    Future.microtask(() {
-      // ignore: use_build_context_synchronously
-      context.read<CustomerController>().loadCustomers();
-    });
   }
 
   @override

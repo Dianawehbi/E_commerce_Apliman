@@ -21,8 +21,8 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ItemController()),
-        ChangeNotifierProvider(create: (_) => CustomerController()),
-        ChangeNotifierProvider(create: (_) => InvoiceController()),
+        ChangeNotifierProvider(create: (_) => CustomerController()..loadCustomers()),
+        ChangeNotifierProvider(create: (_) => InvoiceController()..loadInvoices()),
         ChangeNotifierProvider(
           create: (_) =>
               CartController(cartBox: Hive.box<InvoiceItems>('cartBox'))

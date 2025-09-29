@@ -1,22 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:frontend_e_commerce/controllers/cart_controller.dart';
 import 'package:frontend_e_commerce/models/invoice_items.dart';
+import 'package:provider/provider.dart';
 
 class ShoppingItemCardWidget extends StatelessWidget {
   final InvoiceItems invoiceItems;
-  final VoidCallback? onIncrement;
-  final VoidCallback? onDecrement;
-  final VoidCallback? onDelete;
 
   const ShoppingItemCardWidget({
     super.key,
     required this.invoiceItems,
-    this.onIncrement,
-    this.onDecrement,
-    this.onDelete,
   });
 
   @override
   Widget build(BuildContext context) {
+    var cartController = context.watch<CartController>();
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 12),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
@@ -64,12 +61,14 @@ class ShoppingItemCardWidget extends StatelessWidget {
               children: [
                 IconButton(
                   icon: const Icon(Icons.remove),
-                  onPressed: onDecrement,
+                  onPressed: () =>
+                      cartController.addItem(invoiceItems.item!, -1),
                 ),
                 Text("${invoiceItems.quantity}"),
                 IconButton(
                   icon: const Icon(Icons.add),
-                  onPressed: onIncrement,
+                  onPressed: () =>
+                      cartController.addItem(invoiceItems.item!, 1),
                 ),
               ],
             ),
@@ -77,7 +76,7 @@ class ShoppingItemCardWidget extends StatelessWidget {
             // delete button at the end
             IconButton(
               icon: const Icon(Icons.delete, color: Colors.red),
-              onPressed: onDelete,
+              onPressed: () => cartController.deleteItem(invoiceItems.item!.id!),
             ),
           ],
         ),
